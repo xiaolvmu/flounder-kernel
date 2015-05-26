@@ -36,7 +36,7 @@ static ssize_t name##_show(struct device *dev,			\
 	return sprintf(buf, "%d\n", topology_##name(dev->id));	\
 }
 
-#if defined(topology_thread_cpumask) || defined(topology_core_cpumask) || \
+#if defined(topology_sibling_cpumask) || defined(topology_core_cpumask) || \
     defined(topology_book_cpumask)
 static ssize_t show_cpumap(int type, const struct cpumask *mask, char *buf)
 {
@@ -79,9 +79,9 @@ static DEVICE_ATTR_RO(physical_package_id);
 define_id_show_func(core_id);
 static DEVICE_ATTR_RO(core_id);
 
-define_siblings_show_func(thread_cpumask);
-define_one_ro_named(thread_siblings, show_thread_cpumask);
-define_one_ro_named(thread_siblings_list, show_thread_cpumask_list);
+define_siblings_show_func(thread_siblings, sibling_cpumask);
+static DEVICE_ATTR_RO(thread_siblings);
+static DEVICE_ATTR_RO(thread_siblings_list);
 
 define_siblings_show_func(core_siblings, core_cpumask);
 static DEVICE_ATTR_RO(core_siblings);
