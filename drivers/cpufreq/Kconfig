@@ -57,6 +57,12 @@ config CPU_FREQ_DEFAULT_GOV_PERFORMANCE
 	  the frequency statically to the highest frequency supported by
 	  the CPU.
 
+config CPU_FREQ_DEFAULT_GOV_LIONHEART
+	bool "lionheart"
+	select CPU_FREQ_GOV_LIONHEART
+	help
+	 Use the CPUFreq governor 'lionheart' as default.
+
 config CPU_FREQ_DEFAULT_GOV_POWERSAVE
 	bool "powersave"
 	depends on EXPERT
@@ -136,6 +142,14 @@ config CPU_FREQ_GOV_PERFORMANCE
 	  module will be called cpufreq_performance.
 
 	  If in doubt, say Y.
+
+config CPU_FREQ_GOV_LIONHEART
+	tristate "lionheart"
+	depends on CPU_FREQ
+	help
+	 Use the CPUFreq governor 'lionheart' as default.
+
+	  If in doubt, say N.
 
 config CPU_FREQ_GOV_POWERSAVE
 	tristate "'powersave' governor"
