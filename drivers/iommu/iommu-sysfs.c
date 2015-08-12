@@ -12,6 +12,7 @@
 #include <linux/device.h>
 #include <linux/iommu.h>
 #include <linux/module.h>
+#include <linux/slab.h>
 
 /*
  * We provide a common class "devices" group which initially has no attributes.
@@ -39,7 +40,7 @@ static void iommu_release_device(struct device *dev)
 static struct class iommu_class = {
 	.name = "iommu",
 	.dev_release = iommu_release_device,
-	.dev_groups = iommu_dev_groups,
+	.dev_attrs = iommu_dev_groups,
 };
 
 static int __init iommu_dev_init(void)
