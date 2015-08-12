@@ -758,6 +758,17 @@ enum tcp_ca_event {
 	CA_EVENT_LOSS,		/* loss timeout */
 	CA_EVENT_FAST_ACK,	/* in sequence ack */
 	CA_EVENT_SLOW_ACK,	/* other ack */
+	CA_EVENT_ECN_NO_CE,	/* ECT set, but not CE marked */
+	CA_EVENT_ECN_IS_CE,	/* received CE marked IP packet */
+	CA_EVENT_DELAYED_ACK,	/* Delayed ack is sent */
+	CA_EVENT_NON_DELAYED_ACK,
+};
+
+/* Information about inbound ACK, passed to cong_ops->in_ack_event() */
+enum tcp_ca_ack_event_flags {
+	CA_ACK_SLOWPATH		= (1 << 0),	/* In slow path processing */
+	CA_ACK_WIN_UPDATE	= (1 << 1),	/* ACK updated window */
+	CA_ACK_ECE		= (1 << 2),	/* ECE bit is set on ack */
 };
 
 /*
@@ -769,6 +780,8 @@ enum tcp_ca_event {
 
 #define TCP_CONG_NON_RESTRICTED 0x1
 #define TCP_CONG_RTT_STAMP	0x2
+/* Requires ECN/ECT set on all packets */
+#define TCP_CONG_NEEDS_ECN	0x2
 
 struct tcp_congestion_ops {
 	struct list_head	list;
