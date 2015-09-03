@@ -806,15 +806,9 @@ static unsigned long shrink_page_list(struct list_head *page_list,
 		if (dirty && !writeback)
 			nr_unqueued_dirty++;
 
-		/*
-		 * Treat this page as congested if the underlying BDI is or if
-		 * pages are cycling through the LRU so quickly that the
-		 * pages marked for immediate reclaim are making it to the
-		 * end of the LRU a second time.
-		 */
+		/* Treat this page as congested if underlying BDI is */
 		mapping = page_mapping(page);
-		if ((mapping && bdi_write_congested(mapping->backing_dev_info)) ||
-		    (writeback && PageReclaim(page)))
+		if (mapping && bdi_write_congested(mapping->backing_dev_info))
 			nr_congested++;
 
 		/*
