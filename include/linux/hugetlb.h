@@ -70,10 +70,6 @@ void hugetlb_unreserve_pages(struct inode *inode, long offset, long freed);
 int dequeue_hwpoisoned_huge_page(struct page *page);
 void copy_huge_page(struct page *dst, struct page *src);
 
-#ifdef CONFIG_ARCH_WANT_HUGE_PMD_SHARE
-pte_t *huge_pmd_share(struct mm_struct *mm, unsigned long addr, pud_t *pud);
-#endif
-
 extern unsigned long hugepages_treat_as_movable;
 extern const unsigned long hugetlb_zero, hugetlb_infinity;
 extern int sysctl_hugetlb_shm_group;
@@ -379,15 +375,6 @@ static inline pgoff_t basepage_index(struct page *page)
 	return __basepage_index(page);
 }
 
-static inline int hugepage_migration_support(struct hstate *h)
-{
-#ifdef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
-	return huge_page_shift(h) == PMD_SHIFT;
-#else
-	return 0;
-#endif
-}
-
 #else	/* CONFIG_HUGETLB_PAGE */
 struct hstate {};
 #define alloc_huge_page_node(h, nid) NULL
@@ -413,7 +400,6 @@ static inline pgoff_t basepage_index(struct page *page)
 {
 	return page->index;
 }
-#define hugepage_migration_support(h)	0
 #endif	/* CONFIG_HUGETLB_PAGE */
 
 #endif /* _LINUX_HUGETLB_H */
