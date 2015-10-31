@@ -6433,7 +6433,7 @@ static void claim_allocations(int cpu, struct sched_domain *sd)
 #ifdef CONFIG_SCHED_SMT
 static const struct cpumask *cpu_smt_mask(int cpu)
 {
-	return topology_thread_cpumask(cpu);
+	return topology_sibling_cpumask(cpu);
 }
 #endif
 
@@ -7225,7 +7225,7 @@ void __init sched_init_smp(void)
 		}
 #endif
 #ifdef CONFIG_SCHED_SMT
-		for_each_cpu_mask(other_cpu, *thread_cpumask(cpu))
+		for_each_cpu_mask(other_cpu, thread_siblings(cpu))
 			rq->cpu_locality[other_cpu] = 1;
 #endif
 	}
