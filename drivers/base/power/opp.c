@@ -14,6 +14,7 @@
 #include <linux/kernel.h>
 #include <linux/errno.h>
 #include <linux/err.h>
+#include <linux/init.h>
 #include <linux/slab.h>
 #include <linux/cpufreq.h>
 #include <linux/device.h>

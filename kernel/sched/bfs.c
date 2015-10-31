@@ -7225,7 +7225,7 @@ void __init sched_init_smp(void)
 		}
 #endif
 #ifdef CONFIG_SCHED_SMT
-		for_each_cpu(other_cpu, thread_siblings(cpu))
+		for_each_cpu(other_cpu, thread_cpumask(cpu))
 			rq->cpu_locality[other_cpu] = 1;
 #endif
 	}

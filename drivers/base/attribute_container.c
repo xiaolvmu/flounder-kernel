@@ -12,6 +12,7 @@
  */
 
 #include <linux/attribute_container.h>
+#include <linux/init.h>
 #include <linux/device.h>
 #include <linux/kernel.h>
 #include <linux/slab.h>
