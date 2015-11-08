@@ -256,6 +256,7 @@ static struct global_rq grq ____cacheline_aligned;
 #endif
 
 DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+DEFINE_PER_CPU_SHARED_ALIGNED(struct nr_stats_s, runqueue_stats);
 static DEFINE_MUTEX(sched_hotcpu_mutex);
 
 #ifdef CONFIG_SMP
@@ -681,6 +682,45 @@ static void resched_task(struct task_struct *p);
 static inline void resched_curr(struct rq *rq)
 {
 	resched_task(rq->curr);
+}
+
+static inline unsigned int do_avg_nr_running(struct rq *rq)
+{
+	struct nr_stats_s *nr_stats = &per_cpu(runqueue_stats, rq->cpu);
+	unsigned int ave_nr_running = nr_stats->ave_nr_running;
+	s64 nr, deltax;
+
+	deltax = rq->clock_task - nr_stats->nr_last_stamp;
+	nr = NR_AVE_SCALE(grq.nr_running);
+
+	if (deltax > NR_AVE_PERIOD)
+		ave_nr_running = nr;
+	else
+		ave_nr_running +=
+			NR_AVE_DIV_PERIOD(deltax * (nr - ave_nr_running));
+
+	return ave_nr_running;
+}
+
+static inline void inc_nr_running(struct task_struct *p)
+{
+	struct rq *rq = task_rq(p);
+	struct nr_stats_s *nr_stats = &per_cpu(runqueue_stats, rq->cpu);
+	write_seqcount_begin(&nr_stats->ave_seqcnt);
+	nr_stats->ave_nr_running = do_avg_nr_running(rq);
+	nr_stats->nr_last_stamp = rq->clock_task;
+	grq.nr_running++;
+	write_seqcount_end(&nr_stats->ave_seqcnt);
+}
+
+static inline void dec_nr_running(struct task_struct *p) {
+	struct rq *rq = task_rq(p);
+	struct nr_stats_s *nr_stats = &per_cpu(runqueue_stats, rq->cpu);
+	write_seqcount_begin(&nr_stats->ave_seqcnt);
+	nr_stats->ave_nr_running = do_avg_nr_running(rq);
+	nr_stats->nr_last_stamp = rq->clock_task;
+	grq.nr_running--;
+	write_seqcount_end(&nr_stats->ave_seqcnt);
 }
 
 #ifdef CONFIG_SMP
