@@ -961,9 +961,4 @@ config WAKE_GESTURES
 
 source "drivers/input/touchscreen/synaptics_dsx/Kconfig"
 
-config STATE_NOTIFIER
-	bool "State Notifier"
-	depends on TOUCHSCREEN_ATMEL_MXT_MMI
-	default y
-
 endif

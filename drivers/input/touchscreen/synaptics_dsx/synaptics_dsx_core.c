@@ -33,6 +33,9 @@
 #ifdef KERNEL_ABOVE_2_6_38
 #include <linux/input/mt.h>
 #endif
+#ifdef CONFIG_STATE_NOTIFIER
+#include <linux/state_notifier.h>
+#endif
 #ifdef CONFIG_WAKE_GESTURES
 #include <linux/wake_gestures.h>
 #include <linux/wakelock.h>
@@ -3440,6 +3443,11 @@ static int synaptics_rmi4_suspend(struct device *dev)
 	if (rmi4_data->pwr_reg)
 		regulator_disable(rmi4_data->pwr_reg);
 
+#ifdef CONFIG_STATE_NOTIFIER
+		if (!use_fb_notifier)
+			state_suspend();
+#endif
+
 	return 0;
 }
 
@@ -3486,6 +3494,11 @@ static int synaptics_rmi4_resume(struct device *dev)
 				exp_fhandler->exp_fn->resume(rmi4_data);
 	}
 	mutex_unlock(&exp_data.mutex);
+	
+#ifdef CONFIG_STATE_NOTIFIER
+		if (!use_fb_notifier)
+			state_resume();
+#endif
 
 	return 0;
 }
