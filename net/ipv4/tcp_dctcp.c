@@ -277,7 +277,7 @@ static void dctcp_cwnd_event(struct sock *sk, enum tcp_ca_event ev)
 	}
 }
 
-static int dctcp_get_info(struct sock *sk, u32 ext, struct sk_buff *skb)
+static void dctcp_get_info(struct sock *sk, u32 ext, struct sk_buff *skb)
 {
 	const struct dctcp *ca = inet_csk_ca(sk);
 
@@ -297,9 +297,8 @@ static int dctcp_get_info(struct sock *sk, u32 ext, struct sk_buff *skb)
 			info.dctcp_ab_tot = ca->acked_bytes_total;
 		}
 
-		return nla_put(skb, INET_DIAG_DCTCPINFO, sizeof(info), &info);
+		nla_put(skb, INET_DIAG_DCTCPINFO, sizeof(info), &info);
 	}
-	return 0;
 }
 
 static struct tcp_congestion_ops dctcp __read_mostly = {
