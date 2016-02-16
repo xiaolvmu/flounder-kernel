@@ -303,6 +303,7 @@ static void dctcp_get_info(struct sock *sk, u32 ext, struct sk_buff *skb)
 
 static struct tcp_congestion_ops dctcp __read_mostly = {
 	.init		= dctcp_init,
+	.in_ack_event   = dctcp_update_alpha,
 	.cwnd_event	= dctcp_cwnd_event,
 	.ssthresh	= dctcp_ssthresh,
 	.cong_avoid	= tcp_reno_cong_avoid,
