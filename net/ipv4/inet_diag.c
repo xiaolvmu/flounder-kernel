@@ -206,16 +206,14 @@ int inet_sk_diag_fill(struct sock *sk, struct inet_connection_sock *icsk,
 	handler->idiag_get_info(sk, r, info);
 
 	if (sk->sk_state < TCP_TIME_WAIT) {
-		union tcp_cc_info info;
-		size_t sz = 0;
-		int attr;
+		int err = 0;
 
 		rcu_read_lock();
 		ca_ops = READ_ONCE(icsk->icsk_ca_ops);
 		if (ca_ops && ca_ops->get_info)
-			sz = ca_ops->get_info(sk, ext, &attr, &info);
+			err = ca_ops->get_info(sk, ext, skb);
 		rcu_read_unlock();
-		if (sz && nla_put(skb, attr, sz, &info) < 0)
+		if (err < 0)
 			goto errout;
 	}
 
