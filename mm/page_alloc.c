@@ -1079,9 +1079,9 @@ __rmqueue_fallback(struct zone *zone, unsigned int order, int start_migratetype)
 	int non_cma_order;
 
 	/* Find the largest possible block of pages in the other list */
-	for (current_order = MAX_ORDER-1;
-				current_order >= order && current_order <= MAX_ORDER-1;
-				--current_order) {
+	for (non_cma_order = MAX_ORDER-1;
+				non_cma_order >= order && non_cma_order <= MAX_ORDER-1;
+				--non_cma_order) {
 		int i;
 		for (i = 0;; i++) {
 			int migratetype = fallbacks[start_migratetype][i];
